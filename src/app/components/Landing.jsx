@@ -14,10 +14,10 @@ export default function Landing() {
       color: "from-blue-500 to-blue-600",
     },
     {
-      title: "Credit Consultant",
+      title: "Consultant Form",
       description: "What form the credit consultant will fill out to send it to the dispute experts.",
       icon: User,
-      href: "/credit-consultant",
+      href: "/consultant-form",
       color: "from-indigo-500 to-indigo-600",
     },
     {
