@@ -1,10 +1,5 @@
-import React from "react";
-import CreditRepairForm from "./components/CreditRepairForm";
+import Landing from "./components/Landing";
 
 export default function Home() {
-  return (
-    <>
-      <CreditRepairForm />
-    </>
-  );
+  return <Landing />;
 }
