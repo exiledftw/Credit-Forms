@@ -81,7 +81,7 @@ export default function Landing() {
 
         {/* Footer */}
         <div className="text-center text-gray-400 text-sm">
-          <p>Professional credit repair and consulting services</p>
+          <p>By Khizer</p>
         </div>
       </div>
     </div>
