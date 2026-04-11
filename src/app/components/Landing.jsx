@@ -22,7 +22,7 @@ export default function Landing() {
     },
     {
       title: "Dispute Expert",
-      description: "What form the dispute expert will fill out.",
+      description: "What form the dispute expert will fill out and send it to the consultant for a follow up with the client.",
       icon: Shield,
       href: "/dispute-expert",
       color: "from-green-500 to-green-600",

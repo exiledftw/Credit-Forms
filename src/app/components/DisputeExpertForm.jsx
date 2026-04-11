@@ -206,7 +206,7 @@ export default function DisputeExpertPortal() {
       {/* Full Screen Swipe Transition Overlay (Blue/Cyan Theme for Processor) */}
       {mounted && (
         <div
-          className="fixed inset-0 z-[9999] pointer-events-none overflow-hidden"
+          className="fixed inset-0 z-9999 pointer-events-none overflow-hidden"
           style={{ visibility: swipeState === 'idle' ? 'hidden' : 'visible' }}
         >
           <div
