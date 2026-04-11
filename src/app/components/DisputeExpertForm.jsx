@@ -70,6 +70,21 @@ const CustomDropdown = ({ options, value, onChange, placeholder, name }) => {
       >
         <ul 
           className="max-h-60 rounded-md py-1 text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm"
+          onWheel={(e) => {
+            const el = e.currentTarget;
+            const hasScrollableContent = el.scrollHeight > el.clientHeight;
+            if (!hasScrollableContent) return;
+            const isAtTop = el.scrollTop === 0 && e.deltaY < 0;
+            const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight && e.deltaY > 0;
+            if (!isAtTop && !isAtBottom) {
+              e.stopPropagation();
+            }
+            if (hasScrollableContent) {
+              if (isAtTop || isAtBottom) {
+                e.preventDefault();
+              }
+            }
+          }}
         >
           {options.map((option) => (
             <li
@@ -91,7 +106,7 @@ const CustomDropdown = ({ options, value, onChange, placeholder, name }) => {
   );
 };
 
-export default function DisputeExpertForm() {
+export default function DisputeExpertPortal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [swipeState, setSwipeState] = useState('idle'); // 'idle' | 'in' | 'out'
@@ -191,7 +206,7 @@ export default function DisputeExpertForm() {
       {/* Full Screen Swipe Transition Overlay (Blue/Cyan Theme for Processor) */}
       {mounted && (
         <div
-          className="fixed inset-0 z-9999 pointer-events-none overflow-hidden"
+          className="fixed inset-0 z-[9999] pointer-events-none overflow-hidden"
           style={{ visibility: swipeState === 'idle' ? 'hidden' : 'visible' }}
         >
           <div
