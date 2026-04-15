@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { 
-  CheckCircle2, 
-  Mail, 
-  Phone, 
-  ShieldCheck, 
-  ArrowLeft, 
+import {
+  CheckCircle2,
+  Mail,
+  Phone,
+  ShieldCheck,
+  ArrowLeft,
   ArrowRight,
   Home,
   Car,
@@ -53,7 +53,7 @@ export default function CreditRepairForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [swipeState, setSwipeState] = useState('idle'); 
+  const [swipeState, setSwipeState] = useState('idle');
   const [transitionType, setTransitionType] = useState(null);
 
   const otherInputRef = useRef(null);
@@ -208,7 +208,7 @@ export default function CreditRepairForm() {
   // Auto-advance for single choice selections
   const handleGoalSelect = (id) => {
     setFormData(prev => ({ ...prev, primaryGoal: id }));
-    
+
     // Explicitly check the newly selected 'id' right here 
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -218,7 +218,7 @@ export default function CreditRepairForm() {
       } else {
         setStep(3); // Skip straight to the estimated score
       }
-    }, 350); 
+    }, 350);
   };
 
   const handleScoreSelect = (id) => {
@@ -390,7 +390,7 @@ export default function CreditRepairForm() {
                 />
               </div>
               <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-gray-900 px-2">
-                Unlock Your <span className="text-yellow-700">Credit Builder</span> Potential
+                Meet Your <span className="text-yellow-700">Credit Builder</span> Expert
               </h1>
             </div>
 
@@ -404,72 +404,71 @@ export default function CreditRepairForm() {
 
             {/* Seamless Carousel Track Container */}
             <div ref={carouselRef} className="w-full relative" style={{ overflow: 'clip' }}>
-              
-                {/* STEP 1: Primary Goal */}
-                <div className={getStepClasses(1)}>
-                  <div className="text-center mb-5 sm:mb-6">
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800">What is your primary goal?</h2>
-                    <p className="text-xs sm:text-sm text-gray-500 mt-1">Select the main reason you want to build your credit.</p>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    {goalOptions.map((goal) => {
-                      const Icon = goal.icon;
-                      const isSelected = formData.primaryGoal === goal.id;
-                      return (
-                        <button
-                          key={goal.id}
-                          type="button"
-                          onClick={() => handleGoalSelect(goal.id)}
-                          className={`flex flex-col items-center justify-center p-4 sm:p-6 rounded-xl border-2 transition-all duration-200 ${
-                            isSelected 
-                              ? 'border-emerald-500 bg-emerald-50 shadow-md' 
-                              : 'border-gray-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50'
-                          }`}
-                        >
-                          <Icon className={`w-6 h-6 sm:w-8 sm:h-8 mb-2 sm:mb-3 transition-colors ${isSelected ? 'text-emerald-600' : 'text-gray-400'}`} />
-                          <span className={`text-sm sm:text-base font-medium transition-colors ${isSelected ? 'text-emerald-900' : 'text-gray-700'}`}>
-                            {goal.label}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
 
-                {/* STEP 2: "Other" Goal Dedicated Page (Conditional) */}
-                <div className={getStepClasses(2)}>
-                  <div className="text-center mb-5 sm:mb-6">
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800">What is your primary goal?</h2>
-                    <p className="text-xs sm:text-sm text-gray-500 mt-1">Please describe your specific goal so we can assist you better.</p>
-                  </div>
-                  <div className="flex flex-col w-full pb-2">
-                    <input
-                      ref={otherInputRef}
-                      type="text"
-                      id="otherGoalReason"
-                      name="otherGoalReason"
-                      value={formData.otherGoalReason}
-                      onChange={handleInputChange}
-                      onKeyDown={handleOtherInputKeyPress}
-                      className="block w-full rounded-xl border-2 border-gray-200 px-4 py-3 sm:py-4 text-sm sm:text-base text-gray-900 focus:border-emerald-500 focus:outline-none transition-colors shadow-sm"
-                      placeholder="E.g., I want to lower my interest rates..."
-                    />
-                    
-                    <div className="pt-4 mt-6 border-t border-gray-100">
+              {/* STEP 1: Primary Goal */}
+              <div className={getStepClasses(1)}>
+                <div className="text-center mb-5 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">What is your primary goal?</h2>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1">Select the main reason you want to build your credit.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  {goalOptions.map((goal) => {
+                    const Icon = goal.icon;
+                    const isSelected = formData.primaryGoal === goal.id;
+                    return (
                       <button
+                        key={goal.id}
                         type="button"
-                        onClick={nextStep}
-                        disabled={!formData.otherGoalReason.trim()}
-                        className="w-full flex items-center justify-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 px-4 rounded-xl text-sm sm:text-base font-semibold transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={() => handleGoalSelect(goal.id)}
+                        className={`flex flex-col items-center justify-center p-4 sm:p-6 rounded-xl border-2 transition-all duration-200 ${isSelected
+                          ? 'border-emerald-500 bg-emerald-50 shadow-md'
+                          : 'border-gray-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50'
+                          }`}
                       >
-                        <span>Continue</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <Icon className={`w-6 h-6 sm:w-8 sm:h-8 mb-2 sm:mb-3 transition-colors ${isSelected ? 'text-emerald-600' : 'text-gray-400'}`} />
+                        <span className={`text-sm sm:text-base font-medium transition-colors ${isSelected ? 'text-emerald-900' : 'text-gray-700'}`}>
+                          {goal.label}
+                        </span>
                       </button>
-                    </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* STEP 2: "Other" Goal Dedicated Page (Conditional) */}
+              <div className={getStepClasses(2)}>
+                <div className="text-center mb-5 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">What is your primary goal?</h2>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1">Please describe your specific goal so we can assist you better.</p>
+                </div>
+                <div className="flex flex-col w-full pb-2">
+                  <input
+                    ref={otherInputRef}
+                    type="text"
+                    id="otherGoalReason"
+                    name="otherGoalReason"
+                    value={formData.otherGoalReason}
+                    onChange={handleInputChange}
+                    onKeyDown={handleOtherInputKeyPress}
+                    className="block w-full rounded-xl border-2 border-gray-200 px-4 py-3 sm:py-4 text-sm sm:text-base text-gray-900 focus:border-emerald-500 focus:outline-none transition-colors shadow-sm"
+                    placeholder="E.g., I want to lower my interest rates..."
+                  />
+
+                  <div className="pt-4 mt-6 border-t border-gray-100">
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      disabled={!formData.otherGoalReason.trim()}
+                      className="w-full flex items-center justify-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 px-4 rounded-xl text-sm sm:text-base font-semibold transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span>Continue</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
+              </div>
 
-                {/* STEP 3: Estimated Score */}
+              {/* STEP 3: Estimated Score */}
               <div className={getStepClasses(3)}>
                 <div className="text-center mb-5 sm:mb-6">
                   <h2 className="text-lg sm:text-xl font-semibold text-gray-800">What is your estimated credit score?</h2>

@@ -7,26 +7,26 @@ import { FileText, User, Shield } from "lucide-react";
 export default function Landing() {
   const services = [
     {
-      title: "Client-Form",
+      title: "Client-Survey-Form",
       description: "What form the client will fill out to send it to the credit consultant.",
       icon: FileText,
       href: "/client-form",
       color: "from-blue-500 to-blue-600",
     },
-    {
-      title: "Consultant Form",
-      description: "What form the credit consultant will fill out to send it to the dispute experts.",
-      icon: User,
-      href: "/consultant-form",
-      color: "from-indigo-500 to-indigo-600",
-    },
-    {
-      title: "Dispute Expert",
-      description: "What form the dispute expert will fill out and send it to the consultant for a follow up with the client.",
-      icon: Shield,
-      href: "/dispute-expert",
-      color: "from-green-500 to-green-600",
-    },
+    // {
+    //   title: "Consultant Form",
+    //   description: "What form the credit consultant will fill out to send it to the dispute experts.",
+    //   icon: User,
+    //   href: "/consultant-form",
+    //   color: "from-indigo-500 to-indigo-600",
+    // },
+    // {
+    //   title: "Dispute Expert",
+    //   description: "What form the dispute expert will fill out and send it to the consultant for a follow up with the client.",
+    //   icon: Shield,
+    //   href: "/dispute-expert",
+    //   color: "from-green-500 to-green-600",
+    // },
   ];
 
   return (
