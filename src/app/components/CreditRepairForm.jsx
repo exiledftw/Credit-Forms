@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { 
   CheckCircle2, 
   Mail, 
@@ -57,6 +57,16 @@ export default function CreditRepairForm() {
   const [transitionType, setTransitionType] = useState(null);
 
   const otherInputRef = useRef(null);
+  const carouselRef = useRef(null);
+  const frozenHeight = useRef(null);
+
+  // Capture current carousel height right before a step change so we
+  // can animate from the old height to the new one.
+  const captureCurrentHeight = () => {
+    if (carouselRef.current) {
+      frozenHeight.current = carouselRef.current.offsetHeight;
+    }
+  };
 
   const [formData, setFormData] = useState({
     primaryGoal: '',
@@ -75,6 +85,29 @@ export default function CreditRepairForm() {
     setMounted(true);
   }, []);
 
+  // Belt-and-suspenders: force native scroll to work on this page.
+  // Lenis smooth-scroll sets overflow:hidden on <html>, which kills
+  // native scrolling. Even though LenisWrapper is now route-aware,
+  // this guarantees scroll works if the user navigates here via
+  // client-side routing before Lenis has time to tear down.
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+
+    // Save original values
+    const origHtmlOverflow = html.style.overflow;
+    const origBodyOverflow = body.style.overflow;
+
+    // Force native scroll
+    html.style.overflow = 'auto';
+    body.style.overflow = 'auto';
+
+    return () => {
+      html.style.overflow = origHtmlOverflow;
+      body.style.overflow = origBodyOverflow;
+    };
+  }, []);
+
   // Focus the "Other" input automatically when landing on Step 2
   useEffect(() => {
     if (step === 2) {
@@ -84,9 +117,52 @@ export default function CreditRepairForm() {
     }
   }, [step]);
 
+  // Smooth height animation when switching steps.
+  // The carousel container's height is determined by whichever step is
+  // `position: relative` (the active one). When we switch steps the
+  // old step becomes absolute (height drops out) and the new step
+  // becomes relative (new height snaps in). This effect bridges the
+  // two heights with a CSS transition so the card resizes smoothly.
+  useLayoutEffect(() => {
+    const el = carouselRef.current;
+    const fromH = frozenHeight.current;
+    if (!el || fromH === null || !mounted) return;
+
+    frozenHeight.current = null; // consume
+
+    // Measure only the active step's height. We must NOT use
+    // el.scrollHeight because it includes the absolutely-positioned
+    // outgoing step, which overshoots when the old step is taller.
+    const activeStep = Array.from(el.children).find(
+      (child) => getComputedStyle(child).position === 'relative'
+    );
+    const toH = activeStep ? activeStep.offsetHeight : el.offsetHeight;
+
+    if (fromH === toH) return;
+
+    // Lock at the old height (no transition yet)
+    el.style.transition = 'none';
+    el.style.height = `${fromH}px`;
+    el.offsetHeight; // force reflow
+
+    // Animate to the new height
+    el.style.transition = 'height 400ms ease-in-out';
+    el.style.height = `${toH}px`;
+
+    // Clean up after the animation finishes so the container can
+    // grow naturally again (important for page-level scrolling).
+    const cleanup = () => {
+      el.style.height = '';
+      el.style.transition = '';
+    };
+    const timer = setTimeout(cleanup, 420);
+    return () => clearTimeout(timer);
+  }, [step, mounted]);
+
   // --- HANDLERS ---
   const nextStep = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    captureCurrentHeight();
     setStep((prev) => {
       // If we are on Step 1 and they DID NOT choose "other", skip Step 2 directly to Step 3
       if (prev === 1 && formData.primaryGoal !== 'other') {
@@ -98,6 +174,7 @@ export default function CreditRepairForm() {
 
   const prevStep = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    captureCurrentHeight();
     setStep((prev) => {
       // If we are on Step 3 and they DID NOT choose "other" previously, skip Step 2 backward to Step 1
       if (prev === 3 && formData.primaryGoal !== 'other') {
@@ -134,7 +211,8 @@ export default function CreditRepairForm() {
     
     // Explicitly check the newly selected 'id' right here 
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' }); 
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      captureCurrentHeight();
       if (id === 'other') {
         setStep(2); // Go to custom input
       } else {
@@ -199,28 +277,33 @@ export default function CreditRepairForm() {
   const progressPercentage = ((step - 1) / (totalSteps - 1)) * 100;
 
   // NATIVE CSS LAYOUT LOGIC
-  // This completely eliminates the need for JavaScript height calculations.
-  // Active step is relatively positioned (giving height to the container), inactive steps are absolute (hidden).
   const getStepClasses = (stepNumber) => {
     const base = "w-full transition-all duration-500 ease-in-out px-1 pb-4";
     if (step === stepNumber) {
       return `${base} relative opacity-100 translate-x-0 scale-100 z-10 pointer-events-auto`;
     } else if (stepNumber < step) {
-      return `${base} absolute top-0 left-0 opacity-0 -translate-x-8 scale-95 z-0 pointer-events-none`;
+      // Slide fully offscreen left — overflow:clip on the container hides it
+      return `${base} absolute top-0 left-0 opacity-0 -translate-x-full scale-95 z-0 pointer-events-none`;
     } else {
-      return `${base} absolute top-0 left-0 opacity-0 translate-x-8 scale-95 z-0 pointer-events-none`;
+      // Slide fully offscreen right
+      return `${base} absolute top-0 left-0 opacity-0 translate-x-full scale-95 z-0 pointer-events-none`;
     }
   };
 
   return (
     <>
-      {/* SCROLLBAR STABILIZATION STYLES */}
-      <style dangerouslySetInnerHTML={{__html: `
-        /* Force vertical scrollbar to always show to prevent layout shifting (shakiness) when steps change height */
-        html, body {
-          overflow-y: scroll !important;
+      {/* SAFE SCROLLBAR HIDING STYLES */}
+      <style>{`
+        /* Hide scrollbar completely everywhere safely without locking document flow */
+        ::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
         }
-      `}} />
+        * {
+          scrollbar-width: none !important;
+        }
+      `}</style>
 
       {/* Full Screen Swipe Transition Overlay */}
       {mounted && (
@@ -253,7 +336,7 @@ export default function CreditRepairForm() {
 
       {isSuccess ? (
         /* --- SUCCESS / BOOKING SCREEN --- */
-        <div className="flex min-h-screen bg-gray-50 items-start justify-center px-3 sm:px-6 pt-6 sm:pt-12 pb-24 w-full">
+        <div className="flex min-h-screen font-sans bg-gray-50 items-start justify-center px-3 sm:px-6 lg:px-8 pt-6 sm:pt-12 pb-24 w-full">
           <div className="max-w-4xl w-full relative bg-white p-5 sm:p-10 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-6 animate-fade-in-up">
 
             <button
@@ -320,7 +403,7 @@ export default function CreditRepairForm() {
             </div>
 
             {/* Seamless Carousel Track Container */}
-            <div className="w-full relative overflow-hidden">
+            <div ref={carouselRef} className="w-full relative" style={{ overflow: 'clip' }}>
               
                 {/* STEP 1: Primary Goal */}
                 <div className={getStepClasses(1)}>
