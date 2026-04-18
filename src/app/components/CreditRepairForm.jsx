@@ -572,7 +572,7 @@ export default function CreditRepairForm() {
               {/* STEP 6: Contact / Submit */}
               <div className={`${getStepClasses(6)} flex flex-col`}>
                 <div className="text-center mb-5 sm:mb-6">
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Where should we send your strategy?</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Tell us about yourself</h2>
                   <p className="text-xs sm:text-sm text-gray-500 mt-1">Enter your details to request your free consultation.</p>
                 </div>
 
