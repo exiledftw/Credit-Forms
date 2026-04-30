@@ -7,11 +7,18 @@ import { FileText, User, Shield } from "lucide-react";
 export default function Landing() {
   const services = [
     {
-      title: "Client-Survey-Form",
-      description: "What form the client will fill out to send it to the credit consultant.",
+      title: "Credit Repair Form",
+      description: "Original credit repair form for client assessment.",
+      icon: FileText,
+      href: "/credit-form",
+      color: "from-blue-500 to-blue-600",
+    },
+    {
+      title: "Credit Repair Form v2",
+      description: "Enhanced version with improved UX and multi-step flow.",
       icon: FileText,
       href: "/client-form",
-      color: "from-blue-500 to-blue-600",
+      color: "from-emerald-500 to-emerald-600",
     },
     // {
     //   title: "Consultant Form",
