@@ -1,10 +1,10 @@
 import React from "react";
-import CreditRepairForm from "../components/CreditRepairForm";
+import CreditRepairFormv2 from "../components/CreditRepairFormv2";
 
 export default function ClientFormPage() {
   return (
     <>
-      <CreditRepairForm />
+      <CreditRepairFormv2 />
     </>
   );
 }
